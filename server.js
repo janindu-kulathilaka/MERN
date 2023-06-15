@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = 4000
+
+app.use(express.json());
+app.use(express.static('public'));
 
 const QUESTIONS = [
   {
@@ -30,13 +33,22 @@ const SUBMISSION = [
   },
 ];
 
-app.post("/signup", function (req, res) {
   //Add logic to decode body
   //body should have email and password
-
   //Store email and password (as is for now) in the USERS array above (only if the user with the given email doesn't exit)
-
   //return back 200 status code to the client
+app.post("/signup", function (req, res) {
+
+  const { email, password } = req.body;
+
+  const userExists = USERS.some(user => user.email === email);
+  if (userExists) {
+    return res.status(409).send("Email already taken");
+  }
+
+  USERS.push({ email, password });
+
+  res.sendStatus(200);
 
   res.send("Hello World! from signup");
 });
