@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+app.use(express.json());
+
 const QUESTIONS = [
   {
     title: "Two states",
@@ -30,15 +32,25 @@ const SUBMISSION = [
   },
 ];
 
+const USERS = [];
+
+//Add logic to decode body
+//body should have email and password
+//Store email and password (as is for now) in the USERS array above (only if the user with the given email doesn't exit)
+//return back 200 status code to the client
+
 app.post("/signup", function (req, res) {
-  //Add logic to decode body
-  //body should have email and password
+  const { email, password } = req.body;
 
-  //Store email and password (as is for now) in the USERS array above (only if the user with the given email doesn't exit)
+  const userExists = USERS.some((user) => user.email === email);
 
-  //return back 200 status code to the client
+  if (userExists) {
+    return res.status(409).send("Email already taken");
+  }
 
-  res.send("Hello World! from signup");
+  USERS.push({ email, password });
+
+  res.sendStatus(200);
 });
 
 app.post("/login", function (req, res) {
@@ -70,6 +82,10 @@ app.post("/submissions", function (req, res) {
   // store the submission in the SUBMISSION array above
   res.send("Hello World! from submissions");
 });
+
+// leaving as hard todos
+// Create a route that lets an admin add a new problem
+// ensure that only admins can do that
 
 app.listen(port, function () {
   console.log(`Example app listening on port ${port}`);
